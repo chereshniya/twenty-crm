@@ -3,11 +3,11 @@ import {
   NavigationMenuItemType,
 } from 'twenty-sdk/define';
 
-import { LAND_PLOT_OBJECT_UNIVERSAL_IDENTIFIER } from '../constants/universal-identifiers';
+import { LAND_PLOTS_VIEW_UNIVERSAL_IDENTIFIER } from '../constants/universal-identifiers';
 
 export default defineNavigationMenuItem({
-  universalIdentifier: '16cbdf3c-5947-4c9d-8ceb-535f21399090',
+  universalIdentifier: '4a69f981-3d15-4d79-b54d-3811ecff02b6',
   position: 4,
-  type: NavigationMenuItemType.OBJECT,
-  targetObjectUniversalIdentifier: LAND_PLOT_OBJECT_UNIVERSAL_IDENTIFIER,
+  type: NavigationMenuItemType.VIEW,
+  viewUniversalIdentifier: LAND_PLOTS_VIEW_UNIVERSAL_IDENTIFIER,
 });
