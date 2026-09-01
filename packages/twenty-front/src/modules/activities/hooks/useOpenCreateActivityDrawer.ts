@@ -14,7 +14,7 @@ import { useObjectMetadataItems } from '@/object-metadata/hooks/useObjectMetadat
 import { useCreateManyRecords } from '@/object-record/hooks/useCreateManyRecords';
 import { useCreateOneRecord } from '@/object-record/hooks/useCreateOneRecord';
 import { findTargetFieldInfo } from '@/object-record/record-field/ui/utils/junction/findTargetFieldInfo';
-import { useObjectMorphJunctionConfigOrThrow } from '@/object-record/record-field/ui/hooks/useObjectMorphJunctionConfigOrThrow';
+import { useObjectMorphJunctionConfig } from '@/object-record/record-field/ui/hooks/useObjectMorphJunctionConfig';
 import { isDefined } from 'twenty-shared/utils';
 
 export const useOpenCreateActivityDrawer = ({
@@ -32,12 +32,15 @@ export const useOpenCreateActivityDrawer = ({
 
   const { objectMetadataItems } = useObjectMetadataItems();
 
-  const morphJunctionConfig = useObjectMorphJunctionConfigOrThrow({
+  const morphJunctionConfig = useObjectMorphJunctionConfig({
     objectNameSingular: activityObjectNameSingular,
   });
+  const junctionObjectMetadataNameSingular =
+    morphJunctionConfig?.junctionObjectMetadata.nameSingular ??
+    activityObjectNameSingular;
 
   const { createManyRecords: createActivityTargets } = useCreateManyRecords({
-    objectNameSingular: morphJunctionConfig.junctionObjectMetadata.nameSingular,
+    objectNameSingular: junctionObjectMetadataNameSingular,
     shouldMatchRootQueryFilter: true,
   });
 
@@ -73,6 +76,18 @@ export const useOpenCreateActivityDrawer = ({
         : {}),
       position: 'last',
     });
+
+    if (!isDefined(morphJunctionConfig)) {
+      setActivityTargetableEntityArray(targetableObjects);
+      openRecordInSidePanel({
+        recordId: activity.id,
+        objectNameSingular: activityObjectNameSingular,
+        isNewRecord: true,
+      });
+      setViewableRecordId(activity.id);
+      setIsUpsertingActivityInDB(false);
+      return;
+    }
 
     const { junctionObjectMetadata, sourceJoinColumnName } =
       morphJunctionConfig;

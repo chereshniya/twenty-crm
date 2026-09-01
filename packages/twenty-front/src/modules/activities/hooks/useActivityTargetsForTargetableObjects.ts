@@ -4,7 +4,7 @@ import {
 } from 'twenty-shared/types';
 
 import { findActivityTargetsOperationSignatureFactory } from '@/activities/graphql/operation-signatures/factories/findActivityTargetsOperationSignatureFactory';
-import { useObjectMorphJunctionConfigOrThrow } from '@/object-record/record-field/ui/hooks/useObjectMorphJunctionConfigOrThrow';
+import { useObjectMorphJunctionConfig } from '@/object-record/record-field/ui/hooks/useObjectMorphJunctionConfig';
 import { type ActivityTargetableObject } from '@/activities/types/ActivityTargetableEntity';
 import { type ActivityTarget } from '@/activities/types/ActivityTarget';
 import { getActivityTargetsFilter } from '@/activities/utils/getActivityTargetsFilter';
@@ -43,9 +43,20 @@ export const useActivityTargetsForTargetableObjects = ({
       objectMetadataItems,
     });
 
-  const morphJunctionConfig = useObjectMorphJunctionConfigOrThrow({
+  const morphJunctionConfig = useObjectMorphJunctionConfig({
     objectNameSingular,
   });
+
+  if (morphJunctionConfig === null) {
+    return {
+      activityTargets: [],
+      loadingActivityTargets: false,
+      totalCountActivityTargets: 0,
+      fetchMoreRecords: () => Promise.resolve(),
+      hasNextPage: false,
+      activityRelationFieldName: '',
+    };
+  }
 
   const { junctionObjectMetadata, sourceField } = morphJunctionConfig;
 

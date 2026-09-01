@@ -20,6 +20,16 @@
 
 <br />
 
+# Gektar deployment
+
+This fork carries the declarative Gektar CRM application under
+[`packages/twenty-apps/internal/gektar`](packages/twenty-apps/internal/gektar).
+Its [README](packages/twenty-apps/internal/gektar/README.md) is the authority for
+the production image target, Coolify build context, server/worker Compose
+deployment, runtime environment boundaries, S3 media configuration and app
+installation. Upstream self-hosting documentation remains applicable to the
+Twenty core platform.
+
 # Why Twenty
 
 Twenty gives technical teams the building blocks for a custom CRM that meets complex business needs and quickly adapts as the business evolves. Twenty is the CRM you build, ship, and version like the rest of your stack.

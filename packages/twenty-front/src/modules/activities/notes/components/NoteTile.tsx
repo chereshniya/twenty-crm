@@ -4,7 +4,7 @@ import { t } from '@lingui/core/macro';
 import { useActivityFieldComponentInstanceId } from '@/activities/hooks/useActivityFieldComponentInstanceId';
 import { type Note } from '@/activities/types/Note';
 import { getActivityPreview } from '@/activities/utils/getActivityPreview';
-import { useObjectMorphJunctionConfigOrThrow } from '@/object-record/record-field/ui/hooks/useObjectMorphJunctionConfigOrThrow';
+import { useObjectMorphJunctionConfig } from '@/object-record/record-field/ui/hooks/useObjectMorphJunctionConfig';
 import { useOpenRecordInSidePanel } from '@/side-panel/hooks/useOpenRecordInSidePanel';
 import { CoreObjectNameSingular } from 'twenty-shared/types';
 import { RecordFieldsScopeContextProvider } from '@/object-record/record-field-list/contexts/RecordFieldsScopeContext';
@@ -13,6 +13,7 @@ import { RecordFieldComponentInstanceContext } from '@/object-record/record-fiel
 import { RecordInlineCell } from '@/object-record/record-inline-cell/components/RecordInlineCell';
 import { getRecordFieldInputInstanceId } from '@/object-record/utils/getRecordFieldInputId';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
+import { isDefined } from 'twenty-shared/utils';
 
 const StyledCard = styled.div<{ isSingleNote: boolean }>`
   align-items: flex-start;
@@ -79,17 +80,39 @@ export const NoteTile = ({
 
   const body = getActivityPreview(note?.bodyV2?.blocknote ?? null);
 
-  const junctionFieldName = useObjectMorphJunctionConfigOrThrow({
+  const junctionConfig = useObjectMorphJunctionConfig({
     objectNameSingular: CoreObjectNameSingular.Note,
-  }).junctionField.name;
+  });
+
+  const junctionFieldName = junctionConfig?.junctionField.name;
 
   const instanceIdPrefix =
     useActivityFieldComponentInstanceId('note-card-targets');
-  const componentInstanceId = getRecordFieldInputInstanceId({
-    recordId: note.id,
-    fieldName: junctionFieldName,
-    prefix: instanceIdPrefix,
-  });
+  const componentInstanceId = isDefined(junctionFieldName)
+    ? getRecordFieldInputInstanceId({
+        recordId: note.id,
+        fieldName: junctionFieldName,
+        prefix: instanceIdPrefix,
+      })
+    : null;
+
+  if (!isDefined(junctionFieldName) || !isDefined(componentInstanceId)) {
+    return (
+      <StyledCard isSingleNote={isSingleNote}>
+        <StyledCardDetailsContainer
+          onClick={() =>
+            openRecordInSidePanel({
+              recordId: note.id,
+              objectNameSingular: CoreObjectNameSingular.Note,
+            })
+          }
+        >
+          <StyledNoteTitle>{note.title ?? t`Task Title`}</StyledNoteTitle>
+          <StyledCardContent>{body}</StyledCardContent>
+        </StyledCardDetailsContainer>
+      </StyledCard>
+    );
+  }
 
   return (
     <StyledCard isSingleNote={isSingleNote}>

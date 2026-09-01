@@ -14,7 +14,7 @@ import { useCreateOneRecord } from '@/object-record/hooks/useCreateOneRecord';
 import { recordStoreFamilyState } from '@/object-record/record-store/states/recordStoreFamilyState';
 
 import { createOneActivityOperationSignatureFactory } from '@/activities/graphql/operation-signatures/factories/createOneActivityOperationSignatureFactory';
-import { useObjectMorphJunctionConfigOrThrow } from '@/object-record/record-field/ui/hooks/useObjectMorphJunctionConfigOrThrow';
+import { useObjectMorphJunctionConfig } from '@/object-record/record-field/ui/hooks/useObjectMorphJunctionConfig';
 import { getJunctionRecordsFromRecord } from '@/object-record/record-field/ui/utils/junction/getJunctionRecordsFromRecord';
 import { type ActivityTarget } from '@/activities/types/ActivityTarget';
 import { capitalize } from 'twenty-shared/utils';
@@ -44,14 +44,17 @@ export const useCreateActivityInDB = ({
       objectNameSingular: activityObjectNameSingular,
     });
 
-  const morphJunctionConfig = useObjectMorphJunctionConfigOrThrow({
+  const morphJunctionConfig = useObjectMorphJunctionConfig({
     objectNameSingular: activityObjectNameSingular,
   });
+  const junctionObjectMetadataNameSingular =
+    morphJunctionConfig?.junctionObjectMetadata.nameSingular ??
+    activityObjectNameSingular;
+  const junctionFieldName = morphJunctionConfig?.junctionField.name;
 
   const { createManyRecords: createManyActivityTargets } =
     useCreateManyRecords<ActivityTarget>({
-      objectNameSingular:
-        morphJunctionConfig.junctionObjectMetadata.nameSingular,
+      objectNameSingular: junctionObjectMetadataNameSingular,
       shouldMatchRootQueryFilter: true,
     });
 
@@ -65,11 +68,13 @@ export const useCreateActivityInDB = ({
         updatedAt: new Date().toISOString(),
       });
 
-      const { junctionObjectMetadata, junctionField } = morphJunctionConfig;
+      if (!morphJunctionConfig || !junctionFieldName) {
+        return createdActivity;
+      }
 
       const activityTargetsToCreate = getJunctionRecordsFromRecord({
         record: activityToCreate,
-        junctionFieldName: junctionField.name,
+        junctionFieldName,
       });
 
       if (isNonEmptyArray(activityTargetsToCreate)) {
@@ -77,6 +82,8 @@ export const useCreateActivityInDB = ({
           recordsToCreate: activityTargetsToCreate,
         });
       }
+
+      const { junctionObjectMetadata, sourceField } = morphJunctionConfig;
 
       const activityTargetsConnection = getRecordConnectionFromRecords({
         objectMetadataItems,
@@ -94,14 +101,14 @@ export const useCreateActivityInDB = ({
         recordId: createdActivity.id,
         cache,
         fieldModifiers: {
-          [junctionField.name]: () => activityTargetsConnection,
+          [sourceField.name]: () => activityTargetsConnection,
         },
         objectMetadataItem: objectMetadataItemActivity,
       });
 
       store.set(recordStoreFamilyState.atomFamily(createdActivity.id), {
         ...createdActivity,
-        [junctionField.name]: activityTargetsToCreate,
+        [sourceField.name]: activityTargetsToCreate,
       });
     },
     [

@@ -4,7 +4,6 @@ import {
   PLOT_GROUP_DESCRIPTION_FIELD_ID,
   PLOT_GROUP_MEMBERSHIPS_FIELD_ID,
   PLOT_GROUP_NAME_FIELD_ID,
-  PLOT_GROUP_ODOO_ID_FIELD_ID,
   PLOT_GROUP_TOTAL_AREA_FIELD_ID,
   PLOT_GROUP_MEMBERSHIP_OBJECT_UNIVERSAL_IDENTIFIER,
   PLOT_GROUP_OBJECT_UNIVERSAL_IDENTIFIER,
@@ -22,7 +21,6 @@ export default defineObject({
   labelIdentifierFieldMetadataUniversalIdentifier: PLOT_GROUP_NAME_FIELD_ID,
   fields: [
     { universalIdentifier: PLOT_GROUP_NAME_FIELD_ID, type: FieldType.TEXT, name: 'name', label: 'Name', icon: 'IconTag' },
-    { universalIdentifier: PLOT_GROUP_ODOO_ID_FIELD_ID, type: FieldType.NUMBER, name: 'odooId', label: 'Odoo ID', icon: 'IconDatabase', isNullable: true, isUnique: true },
     { universalIdentifier: PLOT_GROUP_TOTAL_AREA_FIELD_ID, type: FieldType.NUMBER, name: 'totalArea', label: 'Total area (sotky)', icon: 'IconRulerMeasure', isNullable: true },
     { universalIdentifier: PLOT_GROUP_DESCRIPTION_FIELD_ID, type: FieldType.RICH_TEXT, name: 'description', label: 'Description', icon: 'IconMessage', isNullable: true },
     {
