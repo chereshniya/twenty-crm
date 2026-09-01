@@ -1,7 +1,7 @@
 x-twenty-service: &twenty-service
-  # Required: pin the tested custom image by immutable digest. This image must
-  # include the Gektar app from this repository; `latest` is intentionally not
-  # accepted by this template.
+  # Required: pin the tested Twenty image by immutable digest; `latest` is
+  # intentionally not accepted. The declarative Gektar metadata is installed
+  # separately with `yarn twenty ... apply` after the server is healthy.
   image: ${TWENTY_IMAGE:?Set TWENTY_IMAGE to registry/image@sha256:digest}
   restart: always
   environment: &twenty-environment
@@ -16,12 +16,15 @@ x-twenty-service: &twenty-service
     STORAGE_S3_ENDPOINT: ${STORAGE_S3_ENDPOINT:?Set STORAGE_S3_ENDPOINT}
     STORAGE_S3_ACCESS_KEY_ID: ${STORAGE_S3_ACCESS_KEY_ID:?Set STORAGE_S3_ACCESS_KEY_ID}
     STORAGE_S3_SECRET_ACCESS_KEY: ${STORAGE_S3_SECRET_ACCESS_KEY:?Set STORAGE_S3_SECRET_ACCESS_KEY}
+    STORAGE_S3_PRESIGNED_URL_ENABLED: ${STORAGE_S3_PRESIGNED_URL_ENABLED:-true}
+    STORAGE_S3_PRESIGNED_URL_BASE: ${STORAGE_S3_PRESIGNED_URL_BASE:-}
+    STORAGE_S3_PRESIGNED_URL_EXPIRES_IN: ${STORAGE_S3_PRESIGNED_URL_EXPIRES_IN:-900}
 
 services:
   server:
     <<: *twenty-service
     ports:
-      - "3000:3000"
+      - "${TWENTY_PORT:-8082}:3000"
     environment:
       <<: *twenty-environment
       NODE_PORT: 3000

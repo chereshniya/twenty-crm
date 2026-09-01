@@ -55,6 +55,7 @@ import { isFieldText } from '@/object-record/record-field/ui/types/guards/isFiel
 import { isFieldTextValue } from '@/object-record/record-field/ui/types/guards/isFieldTextValue';
 import { useUpsertRecordsInStore } from '@/object-record/record-store/hooks/useUpsertRecordsInStore';
 import { getForeignKeyNameFromRelationFieldName } from '@/object-record/utils/getForeignKeyNameFromRelationFieldName';
+import { getLandPlotPricePerSotka } from '@/object-record/record-field/ui/utils/getLandPlotPricePerSotka';
 import { isDefined } from 'twenty-shared/utils';
 import { isDeeplyEqual } from '~/utils/isDeeplyEqual';
 
@@ -269,11 +270,34 @@ export const usePersistField = ({
           return;
         }
 
+        const pricePerSotkaUsd =
+          objectMetadataItem.nameSingular === 'landPlot'
+            ? getLandPlotPricePerSotka({
+                fieldName,
+                valueToPersist,
+                currentAreaSotky: store.get(
+                  recordStoreFamilySelector.selectorFamily({
+                    recordId,
+                    fieldName: 'areaSotky',
+                  }),
+                ),
+                currentPriceUsd: store.get(
+                  recordStoreFamilySelector.selectorFamily({
+                    recordId,
+                    fieldName: 'priceUsd',
+                  }),
+                ),
+              })
+            : undefined;
+
         updateOneRecord({
           objectNameSingular: objectMetadataItem.nameSingular,
           idToUpdate: recordId,
           updateOneRecordInput: {
             [fieldName]: valueToPersist,
+            ...(pricePerSotkaUsd === undefined
+              ? {}
+              : { pricePerSotkaUsd }),
           },
         });
 
@@ -281,6 +305,16 @@ export const usePersistField = ({
           recordStoreFamilySelector.selectorFamily({ recordId, fieldName }),
           valueToPersist,
         );
+
+        if (pricePerSotkaUsd !== undefined) {
+          store.set(
+            recordStoreFamilySelector.selectorFamily({
+              recordId,
+              fieldName: 'pricePerSotkaUsd',
+            }),
+            pricePerSotkaUsd,
+          );
+        }
       } else {
         throw new Error(
           `Invalid value to persist: ${JSON.stringify(

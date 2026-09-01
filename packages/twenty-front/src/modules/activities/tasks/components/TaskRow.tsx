@@ -7,7 +7,7 @@ import { beautifyExactDate, hasDatePassed } from '~/utils/date-utils';
 import { ActivityRow } from '@/activities/components/ActivityRow';
 import { useActivityFieldComponentInstanceId } from '@/activities/hooks/useActivityFieldComponentInstanceId';
 import { type Task } from '@/activities/types/Task';
-import { useObjectMorphJunctionConfigOrThrow } from '@/object-record/record-field/ui/hooks/useObjectMorphJunctionConfigOrThrow';
+import { useObjectMorphJunctionConfig } from '@/object-record/record-field/ui/hooks/useObjectMorphJunctionConfig';
 import { useOpenRecordInSidePanel } from '@/side-panel/hooks/useOpenRecordInSidePanel';
 import { CoreObjectNameSingular } from 'twenty-shared/types';
 import { StopPropagationContainer } from '@/object-record/record-board/record-board-card/components/StopPropagationContainer';
@@ -22,6 +22,7 @@ import { OverflowingTextWithTooltip } from 'twenty-ui/surfaces';
 import { Checkbox, CheckboxShape } from 'twenty-ui/input';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 import { useCompleteTask } from '@/activities/tasks/hooks/useCompleteTask';
+import { isDefined } from 'twenty-shared/utils';
 
 const StyledTaskBody = styled.div`
   color: ${themeCssVariables.font.color.tertiary};
@@ -96,17 +97,20 @@ export const TaskRow = ({ task }: { task: Task }) => {
 
   const { completeTask } = useCompleteTask(task);
 
-  const junctionFieldName = useObjectMorphJunctionConfigOrThrow({
+  const junctionConfig = useObjectMorphJunctionConfig({
     objectNameSingular: CoreObjectNameSingular.Task,
-  }).junctionField.name;
+  });
+  const junctionFieldName = junctionConfig?.junctionField.name;
 
   const instanceIdPrefix =
     useActivityFieldComponentInstanceId('task-row-targets');
-  const componentInstanceId = getRecordFieldInputInstanceId({
-    recordId: task.id,
-    fieldName: junctionFieldName,
-    prefix: instanceIdPrefix,
-  });
+  const componentInstanceId = isDefined(junctionFieldName)
+    ? getRecordFieldInputInstanceId({
+        recordId: task.id,
+        fieldName: junctionFieldName,
+        prefix: instanceIdPrefix,
+      })
+    : null;
 
   return (
     <ActivityRow
@@ -145,7 +149,7 @@ export const TaskRow = ({ task }: { task: Task }) => {
             {beautifyExactDate(task.dueAt)}
           </StyledDueDate>
         )}
-        {
+        {isDefined(junctionFieldName) && isDefined(componentInstanceId) && (
           <StyledActivityTargetsContainer>
             <FieldContextProvider
               objectNameSingular={CoreObjectNameSingular.Task}
@@ -171,7 +175,7 @@ export const TaskRow = ({ task }: { task: Task }) => {
               </RecordFieldsScopeContextProvider>
             </FieldContextProvider>
           </StyledActivityTargetsContainer>
-        }
+        )}
       </StyledRightSideContainer>
     </ActivityRow>
   );

@@ -11,7 +11,6 @@ import {
   GEKTAR_MANAGER_EMAIL_FIELD_ID,
   GEKTAR_MANAGER_NAME_FIELD_ID,
   GEKTAR_MANAGER_OBJECT_UNIVERSAL_IDENTIFIER,
-  GEKTAR_MANAGER_ODOO_ID_FIELD_ID,
   GEKTAR_MANAGER_PHONE_FIELD_ID,
   GEKTAR_MANAGER_PLOTS_FIELD_ID,
   GEKTAR_MANAGER_TELEGRAM_CHAT_ID_FIELD_ID,
@@ -48,15 +47,6 @@ export default defineObject({
       label: 'Active',
       icon: 'IconCircleCheck',
       defaultValue: true,
-    },
-    {
-      universalIdentifier: GEKTAR_MANAGER_ODOO_ID_FIELD_ID,
-      type: FieldType.NUMBER,
-      name: 'odooId',
-      label: 'Odoo ID',
-      icon: 'IconDatabase',
-      isNullable: true,
-      isUnique: true,
     },
     {
       universalIdentifier: GEKTAR_MANAGER_REGION_FIELD_ID,
