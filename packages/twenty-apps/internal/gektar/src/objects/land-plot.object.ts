@@ -9,7 +9,6 @@ import {
   GEKTAR_MANAGER_OBJECT_UNIVERSAL_IDENTIFIER,
   LAND_PLOT_AREA_SOTKY_FIELD_ID,
   LAND_PLOT_CADASTRAL_NUMBER_FIELD_ID,
-  LAND_PLOT_COVER_FIELD_ID,
   LAND_PLOT_DESCRIPTION_FIELD_ID,
   LAND_PLOT_LATITUDE_FIELD_ID,
   LAND_PLOT_LIFECYCLE_FIELD_ID,
@@ -137,7 +136,6 @@ export default defineObject({
     { universalIdentifier: LAND_PLOT_RESERVED_UNTIL_FIELD_ID, type: FieldType.DATE_TIME, name: 'reservedUntil', label: 'Reserved until', icon: 'IconClock', isNullable: true },
     { universalIdentifier: LAND_PLOT_DESCRIPTION_FIELD_ID, type: FieldType.RICH_TEXT, name: 'description', label: 'Description', icon: 'IconMessage', isNullable: true },
     { universalIdentifier: LAND_PLOT_PHOTOS_FIELD_ID, type: FieldType.FILES, name: 'photos', label: 'Photos', icon: 'IconPhoto', isNullable: true, universalSettings: { maxNumberOfValues: 50 } },
-    { universalIdentifier: LAND_PLOT_COVER_FIELD_ID, type: FieldType.FILES, name: 'cover', label: 'Cover', icon: 'IconPhoto', isNullable: true, universalSettings: { maxNumberOfValues: 1 } },
     { universalIdentifier: LAND_PLOT_VIDEOS_FIELD_ID, type: FieldType.FILES, name: 'videos', label: 'Videos', icon: 'IconVideo', isNullable: true, universalSettings: { maxNumberOfValues: 20 } },
     {
       universalIdentifier: LAND_PLOT_MANAGER_FIELD_ID,
