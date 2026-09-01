@@ -30,6 +30,7 @@ export const LAND_PLOT_NAME_FIELD_ID = '27b8369e-4c63-4336-a1cb-97a91c3fd9da';
 export const LAND_PLOT_ODOO_ID_FIELD_ID = 'bee59a07-0f04-4fba-b548-193eabee7c43';
 export const LAND_PLOT_REFERENCE_FIELD_ID = '94ae4cfe-bcb4-4c94-a6e0-139d6db4a92d';
 export const LAND_PLOT_REGION_FIELD_ID = 'cfc19336-1571-429a-a2d6-22898e6db7ee';
+export const LAND_PLOT_REGION_SELECT_FIELD_ID = '7e118948-10de-4cc5-b7c6-b3b7ea789fde';
 export const LAND_PLOT_RAION_FIELD_ID = '84cbd210-9bd7-431c-af4b-cb0b9bec10b9';
 export const LAND_PLOT_SETTLEMENT_FIELD_ID = '51a33e30-fe63-4938-8216-1259a664bc6c';
 export const LAND_PLOT_CADASTRAL_NUMBER_FIELD_ID = 'e611a734-afe3-4c61-bef0-a7f4afa66330';
