@@ -1,7 +1,6 @@
 import { SKELETON_LOADER_HEIGHT_SIZES } from '@/activities/components/SkeletonLoader';
 import { useOpenRichTextInSidePanel } from '@/side-panel/hooks/useOpenRichTextInSidePanel';
 import { CoreObjectNameSingular } from 'twenty-shared/types';
-import { t } from '@lingui/core/macro';
 import { useRegisterInputEvents } from '@/object-record/record-field/ui/meta-types/input/hooks/useRegisterInputEvents';
 import { RecordFieldComponentInstanceContext } from '@/object-record/record-field/ui/states/contexts/RecordFieldComponentInstanceContext';
 
@@ -11,20 +10,10 @@ import { FieldInputEventContext } from '@/object-record/record-field/ui/contexts
 import { type FieldRichTextMetadata } from '@/object-record/record-field/ui/types/FieldMetadata';
 import { useAvailableComponentInstanceIdOrThrow } from '@/ui/utilities/state/component-state/hooks/useAvailableComponentInstanceIdOrThrow';
 import { styled } from '@linaria/react';
-import {
-  Suspense,
-  lazy,
-  useCallback,
-  useContext,
-  useRef,
-  useState,
-} from 'react';
+import { Suspense, lazy, useContext, useRef } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import {
-  IconDeviceFloppy,
-  IconLayoutSidebarLeftCollapse,
-} from 'twenty-ui/icon';
-import { Button, FloatingIconButton } from 'twenty-ui/input';
+import { IconLayoutSidebarLeftCollapse } from 'twenty-ui/icon';
+import { FloatingIconButton } from 'twenty-ui/input';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 
 const ActivityRichTextEditor = lazy(() =>
@@ -69,13 +58,6 @@ const StyledCollapseButton = styled.div`
   display: flex;
 `;
 
-const StyledActions = styled.div`
-  align-items: flex-end;
-  display: flex;
-  flex-direction: column;
-  gap: ${themeCssVariables.spacing[2]};
-`;
-
 const LoadingSkeleton = () => {
   const { theme } = useContext(ThemeContext);
   return (
@@ -108,26 +90,13 @@ export const RichTextFieldInput = () => {
 
   const { openRichTextInSidePanel } = useOpenRichTextInSidePanel();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [save, setSave] = useState<(() => void) | null>(null);
   const instanceId = useAvailableComponentInstanceIdOrThrow(
     RecordFieldComponentInstanceContext,
   );
 
-  const { onEscape, onClickOutside, onSubmit } = useContext(
-    FieldInputEventContext,
-  );
-
-  const handleSaveReady = useCallback((saveCallback: (() => void) | null) => {
-    setSave(() => saveCallback);
-  }, []);
-
-  const handleSave = () => {
-    save?.();
-    onSubmit?.({ skipPersist: true });
-  };
+  const { onEscape, onClickOutside } = useContext(FieldInputEventContext);
 
   const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-    save?.();
     onClickOutside?.({ event, skipPersist: true });
   };
 
@@ -157,30 +126,20 @@ export const RichTextFieldInput = () => {
               recordId={recordId}
               objectNameSingular={objectNameSingular}
               fieldName={fieldName}
-              onSaveReady={handleSaveReady}
             />
           )}
         </Suspense>
       </StyledEditorScroll>
-      <StyledActions>
-        <Button
-          Icon={IconDeviceFloppy}
-          title={t`Save`}
+      <StyledCollapseButton>
+        <FloatingIconButton
+          Icon={IconLayoutSidebarLeftCollapse}
           size="small"
-          onClick={handleSave}
-          disabled={save === null}
+          onClick={() => {
+            onEscape?.({ skipPersist: true });
+            openRichTextInSidePanel(recordId, objectNameSingular, fieldName);
+          }}
         />
-        <StyledCollapseButton>
-          <FloatingIconButton
-            Icon={IconLayoutSidebarLeftCollapse}
-            size="small"
-            onClick={() => {
-              onEscape?.({ skipPersist: true });
-              openRichTextInSidePanel(recordId, objectNameSingular, fieldName);
-            }}
-          />
-        </StyledCollapseButton>
-      </StyledActions>
+      </StyledCollapseButton>
     </StyledContainer>
   );
 };

@@ -138,7 +138,7 @@ export default defineObject({
         { id: 'd076c34f-3734-4259-a6c3-96614d35ebd3', value: 'DONE', label: 'Done', position: 2, color: 'green' },
       ],
     },
-    { universalIdentifier: LAND_PLOT_WHY_THIS_PLOT_FIELD_ID, type: FieldType.TEXT, name: 'whyThisPlot', label: 'Why this plot', icon: 'IconBulb', isNullable: true },
+    { universalIdentifier: LAND_PLOT_WHY_THIS_PLOT_FIELD_ID, type: FieldType.RICH_TEXT, name: 'whyThisPlot', label: 'Why this plot', icon: 'IconBulb', isNullable: true },
     { universalIdentifier: LAND_PLOT_RESERVED_UNTIL_FIELD_ID, type: FieldType.DATE_TIME, name: 'reservedUntil', label: 'Reserved until', icon: 'IconClock', isNullable: true },
     { universalIdentifier: LAND_PLOT_DESCRIPTION_FIELD_ID, type: FieldType.RICH_TEXT, name: 'description', label: 'Description', icon: 'IconMessage', isNullable: true },
     { universalIdentifier: LAND_PLOT_PHOTOS_FIELD_ID, type: FieldType.FILES, name: 'photos', label: 'Photos', icon: 'IconPhoto', isNullable: true, universalSettings: { maxNumberOfValues: 50 } },

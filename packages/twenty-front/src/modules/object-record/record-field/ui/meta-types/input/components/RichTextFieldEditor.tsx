@@ -37,7 +37,6 @@ type RichTextFieldEditorProps = {
   objectNameSingular: string;
   fieldName: string;
   onPersistBody?: (blocknote: string) => void;
-  onSaveReady?: (save: (() => void) | null) => void;
   onFocus?: () => void;
   onBlur?: () => void;
   editorRef?: React.MutableRefObject<
@@ -50,7 +49,6 @@ export const RichTextFieldEditor = ({
   objectNameSingular,
   fieldName,
   onPersistBody,
-  onSaveReady,
   onFocus: onFocusOverride,
   onBlur: onBlurOverride,
   editorRef,
@@ -252,17 +250,6 @@ export const RichTextFieldEditor = ({
 
   const handleBodyChangeDebounced = useDebouncedCallback(handleBodyChange, 500);
 
-  const handleSave = useCallback(() => {
-    handleBodyChangeDebounced.flush();
-    flush();
-  }, [flush, handleBodyChangeDebounced]);
-
-  useEffect(() => {
-    onSaveReady?.(handleSave);
-
-    return () => onSaveReady?.(null);
-  }, [handleSave, onSaveReady]);
-
   const handleEditorChange = () => {
     if (isApplyingUpstreamBodyRef.current) {
       return;
@@ -302,7 +289,8 @@ export const RichTextFieldEditor = ({
   }, [focusId, pushFocusItemToFocusStack, onFocusOverride]);
 
   const handleBlockEditorBlur = () => {
-    handleSave();
+    handleBodyChangeDebounced.flush();
+    flush();
 
     if (onBlurOverride) {
       onBlurOverride();
