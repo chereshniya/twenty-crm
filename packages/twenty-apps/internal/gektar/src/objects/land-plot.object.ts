@@ -116,7 +116,7 @@ export default defineObject({
       name: 'lifecycle',
       label: 'Lifecycle',
       icon: 'IconProgress',
-      defaultValue: `'${PlotLifecycle.AVAILABLE}'`,
+      defaultValue: `'${PlotLifecycle.DRAFT}'`,
       options: [
         { id: 'e4e6e74e-35d6-4b47-8e48-74edd9771685', value: PlotLifecycle.DRAFT, label: 'Draft', position: 0, color: 'gray' },
         { id: '897f3d89-2770-41ff-9c72-34978e011c12', value: PlotLifecycle.AVAILABLE, label: 'Available', position: 1, color: 'green' },
